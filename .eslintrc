@@ -1,0 +1,38 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    // always put prettier at last
+    // "plugin:import/recommended",
+    "prettier"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+    // "import/resolver": {
+    //   "alias": { "map": [["@/src", "./src"]], "extensions": [".jsx", ".js"] }
+    // }
+  },
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react/jsx-props-no-spreading": 0,
+    "react/prop-types": 1,
+    "no-unused-vars": 1,
+    "react-hooks/exhaustive-deps": 1
+  }
+}
