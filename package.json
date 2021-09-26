@@ -32,19 +32,27 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
+    "storybook-addon-material-ui": "^0.9.0-alpha.24",
     "typescript": "^4.4.3"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "react": ">=17",
+    "react-dom": ">=17"
   },
   "dependencies": {
-    "@storybook/react": "^6.3.8"
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@storybook/react": "^6.3.8",
+    "clsx": "^1.1.1"
   },
   "scripts": {
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -s ./public -p 6006",
     "build-storybook": "build-storybook",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "lint": "eslint .",
+    "prettier": "prettier --write ."
   },
   "main": "lib/index.js",
   "module": "lib/index.esm.js",

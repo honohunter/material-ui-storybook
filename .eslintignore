@@ -3,3 +3,4 @@ webpack*.*
 dist/*
 lib/*
 rollup.config.js
+storybook-static/*

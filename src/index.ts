@@ -1,4 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-import Button from './buttons/button';
+import NormalHeader from './Headers/NormalHeader';
 
-export { Button };
+export { NormalHeader };
