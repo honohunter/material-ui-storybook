@@ -3,7 +3,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react/types-6-0';
 import { Story } from '@storybook/react';
-import { IconButton, Grid } from '@material-ui/core';
+import { IconButton, Link } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 
@@ -39,9 +39,9 @@ const Template: Story<NormalHeaderProps> = args => (
       <img style={{ display: 'block' }} src="/images/logoIpsum.svg" alt="logo" />
     </LogoWrapper>
     <MenuWrapper>
-      <a href="/">test1</a>
-      <a href="/">test2</a>
-      <a href="/">test2</a>
+      <Link underline="none" color="inherit" href="/">test1</Link>
+      <Link underline="none" color="inherit" href="/">test2</Link>
+      <Link underline="none" color="inherit" href="/">test2</Link>
       <Button {...Button.args} />
     </MenuWrapper>
     <MobileMenuWrapper>

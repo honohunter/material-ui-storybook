@@ -51,11 +51,11 @@ const useStyles = makeStyles(
         alignItems: 'center',
       }),
 
-      MobileMenuWrapper: (props: NormalHeaderProps) => ({
-        // flex: props.menuPosition === 'right' ? 1 : 'unset',
-        // display: 'flex',
-        // alignItems: 'center',
-      }),
+      MobileMenuWrapper: {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'flex-end',
+      },
 
       fullWidth: {
         maxWidth: '100%',
@@ -82,7 +82,11 @@ export const MenuWrapper = React.forwardRef(function MenuWrapper(
 ) {
   return (
     <Grid ref={ref} item className={className}>
-      {children}
+      <Grid container spacing={2} alignItems="center">
+        {React.Children.map(children, child => (
+          <Grid item>{child}</Grid>
+        ))}
+      </Grid>
     </Grid>
   );
 });
@@ -130,12 +134,6 @@ const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
                   className: clsx(child.props.className, classes.MobileMenuWrapper),
                 });
               }
-
-              // if (matches) {
-              //   return (
-              //     <MenuWrapper className={classes.MenuWrapper}>{renderMobileMenu({ mobileMenuIcon })}</MenuWrapper>
-              //   );
-              // }
 
               return null;
             })}
