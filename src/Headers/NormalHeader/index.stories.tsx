@@ -3,11 +3,11 @@
 import React from 'react';
 import { Meta } from '@storybook/react/types-6-0';
 import { Story } from '@storybook/react';
-import { ButtonBase, Grid } from '@material-ui/core';
+import { IconButton, Grid } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 
-import NormalHeader, { NormalHeaderProps, LogoWrapper, MenuWrapper } from '.';
+import NormalHeader, { NormalHeaderProps, LogoWrapper, MenuWrapper, MobileMenuWrapper } from '.';
 
 import { Primary as Button } from '../../buttons/button/index.stories';
 
@@ -27,24 +27,26 @@ export default {
   },
 } as Meta;
 
+const iconSector = (iconName: string) => {
+  const Icon = selectIcons[iconName];
+  return <Icon />;
+};
+
 // Create a master template for mapping args to render the Button component
 const Template: Story<NormalHeaderProps> = args => (
-  <NormalHeader
-    {...args}
-    mobileMenuIcon={selectIcons[args.mobileMenuIcon]}
-    renderMobileMenu={({ mobileMenuIcon: MobileMenuIcon }) => (
-      <ButtonBase>
-        <MobileMenuIcon />
-      </ButtonBase>
-    )}
-  >
+  <NormalHeader {...args}>
     <LogoWrapper>
       <img style={{ display: 'block' }} src="/images/logoIpsum.svg" alt="logo" />
     </LogoWrapper>
     <MenuWrapper>
       <a href="/">test1</a>
+      <a href="/">test2</a>
+      <a href="/">test2</a>
       <Button {...Button.args} />
     </MenuWrapper>
+    <MobileMenuWrapper>
+      <IconButton color="inherit">{iconSector(args.mobileMenuIcon)}</IconButton>
+    </MobileMenuWrapper>
   </NormalHeader>
 );
 

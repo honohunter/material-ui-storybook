@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Grid, { GridSpacing,GridTypeMap } from '@material-ui/core/Grid';
+import Grid, { GridSpacing, GridTypeMap } from '@material-ui/core/Grid';
 
 type WrapperType = {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ type WrapperType = {
 
 export interface NormalHeaderProps {
   color: PropTypes.Color;
-  children: [JSX.Element, JSX.Element];
+  children: [JSX.Element, JSX.Element, JSX.Element];
   menuPosition: 'left' | 'right';
   elevation: number;
   position?: 'fixed' | 'absolute' | 'sticky' | 'static' | 'relative';
@@ -30,8 +30,7 @@ export interface NormalHeaderProps {
   layoutSpacing: GridSpacing;
   className: string;
   displayMenuBreakpoint: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  renderMobileMenu: React.FC<Partial<NormalHeaderProps>>;
-  mobileMenuIcon: SvgIconProps | any;
+  height: number;
 }
 
 const useStyles = makeStyles(
@@ -46,22 +45,37 @@ const useStyles = makeStyles(
       LogoWrapper: (props: NormalHeaderProps) => ({
         flex: props.menuPosition === 'left' ? 1 : 'unset',
       }),
-      MenuWrapper: {
+      MenuWrapper: (props: NormalHeaderProps) => ({
+        flex: props.menuPosition === 'right' ? 1 : 'unset',
         display: 'flex',
         alignItems: 'center',
-      },
+      }),
+
+      MobileMenuWrapper: (props: NormalHeaderProps) => ({
+        // flex: props.menuPosition === 'right' ? 1 : 'unset',
+        // display: 'flex',
+        // alignItems: 'center',
+      }),
+
       fullWidth: {
         maxWidth: '100%',
       },
+      AppBar: ({ height }) => ({ height: height || theme.mixins.toolbar.height }),
     }),
   {},
 );
 
-export const LogoWrapper = ({ children, className }: WrapperType) => (
-  <Grid item className={className}>
-    {children}
-  </Grid>
-);
+export const LogoWrapper = React.forwardRef(function LogoWrapper(
+  { children, className }: WrapperType,
+  ref: React.Ref<HTMLDivElement>,
+) {
+  return (
+    <Grid ref={ref} item className={className}>
+      {children}
+    </Grid>
+  );
+});
+
 export const MenuWrapper = React.forwardRef(function MenuWrapper(
   { children, className }: WrapperType,
   ref: React.Ref<HTMLDivElement>,
@@ -73,18 +87,19 @@ export const MenuWrapper = React.forwardRef(function MenuWrapper(
   );
 });
 
+export const MobileMenuWrapper = React.forwardRef(function MobileMenuWrapper(
+  { children, className }: WrapperType,
+  ref: React.Ref<HTMLDivElement>,
+) {
+  return (
+    <Grid ref={ref} item className={className}>
+      {children}
+    </Grid>
+  );
+});
+
 const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
-  const {
-    color,
-    children,
-    elevation,
-    maxWidth,
-    layoutSpacing,
-    className,
-    displayMenuBreakpoint = 'sm',
-    renderMobileMenu,
-    mobileMenuIcon,
-  } = props;
+  const { color, children, elevation, maxWidth, layoutSpacing, className, displayMenuBreakpoint = 'sm' } = props;
   const classes = useStyles(props);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down(displayMenuBreakpoint));
@@ -95,9 +110,9 @@ const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
       disableGutters
       className={clsx(classes.root, !maxWidth && classes.fullWidth, className)}
     >
-      <AppBar position="relative" color={color} elevation={elevation}>
+      <AppBar position="relative" color={color} elevation={elevation} className={classes.AppBar}>
         <Toolbar>
-          <Grid container spacing={layoutSpacing} alignItems="center">
+          <Grid container spacing={layoutSpacing} alignItems="center" justifyContent="flex-end">
             {React.Children.map(children, child => {
               if (child.type === LogoWrapper) {
                 return React.cloneElement(child, {
@@ -110,9 +125,17 @@ const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
                 });
               }
 
-              if (matches) {
-                return renderMobileMenu({ mobileMenuIcon });
+              if (child.type === MobileMenuWrapper && matches) {
+                return React.cloneElement(child, {
+                  className: clsx(child.props.className, classes.MobileMenuWrapper),
+                });
               }
+
+              // if (matches) {
+              //   return (
+              //     <MenuWrapper className={classes.MenuWrapper}>{renderMobileMenu({ mobileMenuIcon })}</MenuWrapper>
+              //   );
+              // }
 
               return null;
             })}
