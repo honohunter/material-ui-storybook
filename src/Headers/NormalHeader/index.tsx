@@ -9,7 +9,9 @@ import {
   Container,
   useMediaQuery,
   useTheme,
-  SvgIconProps,
+  withStyles,
+  Theme,
+  StyleRules,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,12 +20,14 @@ import Grid, { GridSpacing, GridTypeMap } from '@material-ui/core/Grid';
 type WrapperType = {
   children: React.ReactNode;
   className?: string | undefined;
+  // component?: React.ElementType;
 };
 
 export interface NormalHeaderProps {
   color: PropTypes.Color;
   children: [JSX.Element, JSX.Element, JSX.Element];
   menuPosition: 'left' | 'right';
+  logoPosition: 'left' | 'right';
   elevation: number;
   position?: 'fixed' | 'absolute' | 'sticky' | 'static' | 'relative';
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
@@ -31,44 +35,38 @@ export interface NormalHeaderProps {
   className: string;
   displayMenuBreakpoint: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   height: number;
+  classes?: StyleRules<'positionLeft' | 'position-right' | 'root'> | any;
 }
 
-const useStyles = makeStyles(
-  theme =>
-    createStyles({
-      root: (props: NormalHeaderProps) => ({
-        // overflow: 'hidden',
-        position: props.position,
-        left: 0,
-        right: 0,
-      }),
-      LogoWrapper: (props: NormalHeaderProps) => ({
-        flex: props.menuPosition === 'left' ? 1 : 'unset',
-      }),
-      MenuWrapper: (props: NormalHeaderProps) => ({
-        flex: props.menuPosition === 'right' ? 1 : 'unset',
-        display: 'flex',
-        alignItems: 'center',
-      }),
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    // LogoWrapper: (props: NormalHeaderProps) => ({
+    //   flex: props.menuPosition === 'left' ? 1 : 'unset',
+    // }),
 
-      MobileMenuWrapper: {
-        flex: 1,
-        display: 'flex',
-        justifyContent: 'flex-end',
-      },
-
-      fullWidth: {
-        maxWidth: '100%',
-      },
-      AppBar: ({ height }) => ({ height: height || theme.mixins.toolbar.height }),
-    }),
-  {},
-);
+    positionLeft: {
+      flexGrow: 1,
+    },
+    'position-right': {
+      flexGrow: 1,
+    },
+  });
 
 export const LogoWrapper = React.forwardRef(function LogoWrapper(
   { children, className }: WrapperType,
   ref: React.Ref<HTMLDivElement>,
 ) {
+  // if (Component) {
+  //   return (
+  //     <Component ref={ref} item className={className}>
+  //       {children}
+  //     </Component>
+  //   );
+  // }
   return (
     <Grid ref={ref} item className={className}>
       {children}
@@ -103,45 +101,53 @@ export const MobileMenuWrapper = React.forwardRef(function MobileMenuWrapper(
 });
 
 const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
-  const { color, children, elevation, maxWidth, layoutSpacing, className, displayMenuBreakpoint = 'sm' } = props;
-  const classes = useStyles(props);
+  const {
+    color,
+    children,
+    elevation,
+    maxWidth,
+    layoutSpacing,
+    className,
+    displayMenuBreakpoint = 'sm',
+    classes,
+    menuPosition,
+    logoPosition,
+  } = props;
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down(displayMenuBreakpoint));
 
   return (
-    <Container
-      maxWidth={maxWidth}
-      disableGutters
-      className={clsx(classes.root, !maxWidth && classes.fullWidth, className)}
-    >
-      <AppBar position="relative" color={color} elevation={elevation} className={classes.AppBar}>
-        <Toolbar>
-          <Grid container spacing={layoutSpacing} alignItems="center" justifyContent="flex-end">
-            {React.Children.map(children, child => {
-              if (child.type === LogoWrapper) {
-                return React.cloneElement(child, {
-                  className: clsx(child.props.className, classes.LogoWrapper),
-                });
-              }
-              if (child.type === MenuWrapper && !matches) {
-                return React.cloneElement(child, {
-                  className: clsx(child.props.className, classes.MenuWrapper),
-                });
-              }
+    <div className={clsx(classes.root, className)}>
+      <Container maxWidth={maxWidth} disableGutters>
+        <AppBar position="relative" color={color} elevation={elevation}>
+          <Toolbar className={classes.Toolbar}>
+            <Grid container spacing={layoutSpacing} alignItems="center" justifyContent="flex-end">
+              {React.Children.map(children, child => {
+                if (child.type === LogoWrapper) {
+                  return React.cloneElement(child, {
+                    className: clsx(child.props.className, menuPosition === 'right' && classes.positionLeft),
+                  });
+                }
+                if (child.type === MenuWrapper && !matches) {
+                  return React.cloneElement(child, {
+                    className: clsx(child.props.className, menuPosition === 'left' && classes.positionLeft),
+                  });
+                }
 
-              if (child.type === MobileMenuWrapper && matches) {
-                return React.cloneElement(child, {
-                  className: clsx(child.props.className, classes.MobileMenuWrapper),
-                });
-              }
+                if (child.type === MobileMenuWrapper && matches) {
+                  return React.cloneElement(child, {
+                    className: clsx(child.props.className),
+                  });
+                }
 
-              return null;
-            })}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </Container>
+                return null;
+              })}
+            </Grid>
+          </Toolbar>
+        </AppBar>
+      </Container>
+    </div>
   );
 };
 
-export default NormalHeader;
+export default withStyles(styles, { name: 'MainboardHeader' })(NormalHeader);

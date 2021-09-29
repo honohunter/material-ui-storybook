@@ -11,6 +11,10 @@ import NormalHeader, { NormalHeaderProps, LogoWrapper, MenuWrapper, MobileMenuWr
 
 import { Primary as Button } from '../../buttons/button/index.stories';
 
+interface StoryArgs extends NormalHeaderProps {
+  mobileMenuIcon: string;
+}
+
 const selectIcons: any = { AddAPhotoIcon, MenuIcon };
 
 export default {
@@ -21,6 +25,14 @@ export default {
     mobileMenuIcon: {
       options: ['AddAPhotoIcon', 'MenuIcon'],
       control: { type: 'select' },
+    },
+    logoPosition: {
+      options: ['left', 'right'],
+      control: { type: 'radio' },
+    },
+    menuPosition: {
+      options: ['left', 'right'],
+      control: { type: 'radio' },
     },
     renderMobileMenu: { table: { disable: true } },
     className: { table: { disable: true } },
@@ -33,15 +45,21 @@ const iconSector = (iconName: string) => {
 };
 
 // Create a master template for mapping args to render the Button component
-const Template: Story<NormalHeaderProps> = args => (
+const Template: Story<StoryArgs> = args => (
   <NormalHeader {...args}>
     <LogoWrapper>
       <img style={{ display: 'block' }} src="/images/logoIpsum.svg" alt="logo" />
     </LogoWrapper>
     <MenuWrapper>
-      <Link underline="none" color="inherit" href="/">test1</Link>
-      <Link underline="none" color="inherit" href="/">test2</Link>
-      <Link underline="none" color="inherit" href="/">test2</Link>
+      <Link underline="none" color="inherit" href="/">
+        test1
+      </Link>
+      <Link underline="none" color="inherit" href="/">
+        test2
+      </Link>
+      <Link underline="none" color="inherit" href="/">
+        test2
+      </Link>
       <Button {...Button.args} />
     </MenuWrapper>
     <MobileMenuWrapper>
