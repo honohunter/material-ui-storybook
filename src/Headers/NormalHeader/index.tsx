@@ -12,6 +12,7 @@ import {
   withStyles,
   Theme,
   StyleRules,
+  WithStyles,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -23,7 +24,7 @@ type WrapperType = {
   // component?: React.ElementType;
 };
 
-export interface NormalHeaderProps {
+export interface NormalHeaderProps extends WithStyles<typeof styles> {
   color: PropTypes.Color;
   children: [JSX.Element, JSX.Element, JSX.Element];
   menuPosition: 'left' | 'right';
@@ -35,7 +36,6 @@ export interface NormalHeaderProps {
   className: string;
   displayMenuBreakpoint: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   height: number;
-  classes?: StyleRules<'positionLeft' | 'position-right' | 'root'> | any;
 }
 
 const styles = (theme: Theme) =>
@@ -120,7 +120,7 @@ const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
     <div className={clsx(classes.root, className)}>
       <Container maxWidth={maxWidth} disableGutters>
         <AppBar position="relative" color={color} elevation={elevation}>
-          <Toolbar className={classes.Toolbar}>
+          <Toolbar>
             <Grid container spacing={layoutSpacing} alignItems="center" justifyContent="flex-end">
               {React.Children.map(children, child => {
                 if (child.type === LogoWrapper) {
@@ -150,4 +150,6 @@ const NormalHeader = (props: NormalHeaderProps): JSX.Element => {
   );
 };
 
-export default withStyles(styles, { name: 'MainboardHeader' })(NormalHeader);
+const NormalHeaderStyled = withStyles(styles, { name: 'MainboardHeader' })(NormalHeader);
+
+export default NormalHeaderStyled;
